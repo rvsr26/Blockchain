@@ -1,0 +1,237 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  walletAddress String  @unique
+  displayName  String?
+  email        String?
+  role         String   @default("MEMBER")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  organizations OrganizationMember[]
+  auditEvents  AuditEvent[]
+}
+
+model Organization {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  adminWallet String
+  rules       String?
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  members     OrganizationMember[]
+  elections   Election[]
+  proposals   Proposal[]
+  tenders     Tender[]
+}
+
+model OrganizationMember {
+  id             String       @id @default(uuid())
+  userId         String
+  organizationId String
+  role           String       @default("MEMBER")
+  status         String       @default("ACTIVE")
+  joinedAt       DateTime     @default(now())
+  user           User         @relation(fields: [userId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([userId, organizationId])
+}
+
+model Election {
+  id                  String       @id @default(uuid())
+  title               String
+  description         String?
+  organizationId      String
+  electionType        String       @default("CR")
+  startTime           DateTime
+  endTime             DateTime
+  quorumPercent       Int          @default(50)
+  totalEligibleVoters Int          @default(0)
+  status              String       @default("DRAFT")
+  contractElectionId  Int?
+  metadataCid         String?
+  creatorWallet       String
+  winnerCandidateId   String?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  organization        Organization @relation(fields: [organizationId], references: [id])
+  candidates          Candidate[]
+  votes               Vote[]
+}
+
+model Candidate {
+  id           String   @id @default(uuid())
+  electionId   String
+  name         String
+  description  String?
+  ipfsCid      String?
+  voteCount    Int      @default(0)
+  contractId   Int?
+  createdAt    DateTime @default(now())
+  election     Election @relation(fields: [electionId], references: [id])
+  votes        Vote[]
+}
+
+model Vote {
+  id           String    @id @default(uuid())
+  electionId   String
+  candidateId  String
+  voterWallet  String
+  txHash       String?
+  blockNumber  Int?
+  castAt       DateTime  @default(now())
+  election     Election  @relation(fields: [electionId], references: [id])
+  candidate    Candidate @relation(fields: [candidateId], references: [id])
+
+  @@unique([electionId, voterWallet])
+}
+
+model Proposal {
+  id              String       @id @default(uuid())
+  title           String
+  description     String?
+  organizationId  String
+  authorWallet    String
+  requestedBudget Float?
+  objectives      String?
+  timeline        String?
+  status          String       @default("DRAFT")
+  contractId      Int?
+  ipfsCid         String?
+  votingDeadline  DateTime?
+  yesVotes        Int          @default(0)
+  noVotes         Int          @default(0)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id])
+  proposalVotes   ProposalVote[]
+}
+
+model ProposalVote {
+  id          String   @id @default(uuid())
+  proposalId  String
+  voterWallet String
+  voteType    String
+  txHash      String?
+  castAt      DateTime @default(now())
+  proposal    Proposal @relation(fields: [proposalId], references: [id])
+
+  @@unique([proposalId, voterWallet])
+}
+
+model Tender {
+  id              String       @id @default(uuid())
+  title           String
+  description     String?
+  organizationId  String
+  estimatedBudget Float?
+  requirements    String?
+  eligibilityCriteria String?
+  status          String       @default("DRAFT")
+  contractId      Int?
+  ipfsCid         String?
+  biddingDeadline DateTime?
+  revealDeadline  DateTime?
+  awardedBidder   String?
+  awardedAmount   Float?
+  awardNotes      String?
+  awardedBy       String?
+  creatorWallet   String
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id])
+  bidCommitments  BidCommitment[]
+}
+
+model BidCommitment {
+  id              String   @id @default(uuid())
+  tenderId        String
+  bidderWallet    String
+  commitmentHash  String
+  revealed        Boolean  @default(false)
+  revealedAmount  Float?
+  valid           Boolean?
+  txHashCommit    String?
+  txHashReveal    String?
+  committedAt     DateTime @default(now())
+  revealedAt      DateTime?
+  tender          Tender   @relation(fields: [tenderId], references: [id])
+
+  @@unique([tenderId, bidderWallet])
+}
+
+model Document {
+  id           String   @id @default(uuid())
+  fileName     String
+  fileType     String
+  ipfsCid      String?
+  localPath    String?
+  uploadedBy   String
+  documentType String
+  refId        String?
+  refType      String?
+  createdAt    DateTime @default(now())
+}
+
+model AiAnalysis {
+  id           String   @id @default(uuid())
+  refId        String
+  refType      String
+  summary      String?
+  analysisJson String
+  confidence   String   @default("medium")
+  provider     String   @default("demo")
+  createdAt    DateTime @default(now())
+
+  @@index([refId, refType])
+}
+
+model AuditEvent {
+  id          String   @id @default(uuid())
+  module      String
+  action      String
+  actorWallet String?
+  userId      String?
+  refId       String?
+  refType     String?
+  txHash      String?
+  blockNumber Int?
+  status      String   @default("SUCCESS")
+  details     String?
+  createdAt   DateTime @default(now())
+  user        User?    @relation(fields: [userId], references: [id])
+}
+
+model ReputationEvent {
+  id          String   @id @default(uuid())
+  walletAddress String
+  points      Int
+  reason      String
+  refId       String?
+  refType     String?
+  createdAt   DateTime @default(now())
+}
+
+model BlockchainTransaction {
+  id          String   @id @default(uuid())
+  txHash      String   @unique
+  blockNumber Int?
+  from        String?
+  to          String?
+  method      String?
+  module      String?
+  status      String   @default("PENDING")
+  gasUsed     String?
+  createdAt   DateTime @default(now())
+}
+

@@ -1,0 +1,29 @@
+﻿{
+  "_metadata": {
+    "description": "SYNTHETIC DEMONSTRATION DATA — Not real government or private tenders",
+    "generated": "2026-09-27",
+    "purpose": "Academic prototype demonstration",
+    "disclaimer": "These are fictitious vendors and prices for demonstration only"
+  },
+  "tenders": [
+    {
+      "id": "T001", "title": "Campus Network Equipment Procurement",
+      "estimatedBudget": 500000, "status": "EVALUATION",
+      "bidders": [
+        { "name": "Vendor Alpha Pvt Ltd", "commitmentHash": "0xabc...", "revealedAmount": 480000, "valid": true, "docCompleteness": "8/10" },
+        { "name": "Netcom Systems", "commitmentHash": "0xdef...", "revealedAmount": 460000, "valid": true, "docCompleteness": "9/10" },
+        { "name": "TechLink Solutions", "commitmentHash": "0x123...", "revealedAmount": 475000, "valid": true, "docCompleteness": "7/10" }
+      ]
+    },
+    {
+      "id": "T002", "title": "Library Book Procurement 2026",
+      "estimatedBudget": 150000, "status": "AWARDED",
+      "winner": "Book Distributors India", "awardedAmount": 142000
+    }
+  ],
+  "commitRevealDemo": {
+    "description": "How commit-reveal works",
+    "step1": { "bidAmount": 480000, "secret": "alpha-secret-2026", "hash": "keccak256(480000 + alpha-secret-2026)" },
+    "step2": { "reveal": "bidder reveals amount=480000, secret=alpha-secret-2026", "verification": "contract recomputes hash and compares" }
+  }
+}

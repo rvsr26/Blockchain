@@ -1,0 +1,33 @@
+{
+  "name": "blockchain-governance-platform",
+  "version": "1.0.0",
+  "description": "Blockchain-Based Transparent Governance, Election and Tender Management Platform",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "apps/api",
+    "packages/contracts",
+    "packages/shared",
+    "packages/config"
+  ],
+  "scripts": {
+    "blockchain": "npm run node --workspace=packages/contracts",
+    "deploy": "npm run deploy --workspace=packages/contracts",
+    "seed": "npm run seed --workspace=apps/api",
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:contracts": "npm run node --workspace=packages/contracts",
+    "build": "npm run build --workspace=apps/web",
+    "test": "npm run test --workspace=packages/contracts",
+    "test:contracts": "npm run test --workspace=packages/contracts",
+    "test:api": "npm run test --workspace=apps/api"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

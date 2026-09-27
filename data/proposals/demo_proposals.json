@@ -1,0 +1,17 @@
+﻿{
+  "_metadata": {
+    "description": "SYNTHETIC DEMONSTRATION DATA — Not real proposals",
+    "generated": "2026-09-27",
+    "purpose": "Academic prototype demonstration"
+  },
+  "proposals": [
+    { "id": 1, "title": "Annual Hackathon 2026", "requestedBudget": 20000, "status": "ACTIVE", "yesVotes": 18, "noVotes": 4, "completeness": "partial", "aiLabel": "incomplete", "missingInfo": ["Budget breakdown", "Venue confirmation"] },
+    { "id": 2, "title": "Educational Industry Visit", "requestedBudget": 15000, "status": "ACTIVE", "yesVotes": 22, "noVotes": 8, "completeness": "moderate", "aiLabel": "clear" },
+    { "id": 3, "title": "GPU Lab Equipment Upgrade", "requestedBudget": 200000, "status": "DRAFT", "completeness": "low", "aiLabel": "incomplete", "missingInfo": ["Vendor quotations", "Approval from HOD"] },
+    { "id": 4, "title": "Open Source Club Formation", "requestedBudget": 5000, "status": "SUCCEEDED", "yesVotes": 45, "noVotes": 3, "completeness": "high", "aiLabel": "complete" },
+    { "id": 5, "title": "Campus WiFi Survey", "requestedBudget": 0, "status": "EXECUTED", "yesVotes": 55, "noVotes": 2, "completeness": "high", "aiLabel": "clear" },
+    { "id": 6, "title": "Duplicate Event Proposal", "requestedBudget": 10000, "status": "DEFEATED", "yesVotes": 5, "noVotes": 30, "completeness": "low", "aiLabel": "unclear", "note": "Similar to existing event — reviewers rejected" },
+    { "id": 7, "title": "Inter-college Cricket Tournament", "requestedBudget": 8000, "status": "ACTIVE", "yesVotes": 30, "noVotes": 15, "completeness": "moderate", "aiLabel": "clear" },
+    { "id": 8, "title": "Research Paper Publication Fund", "requestedBudget": 50000, "status": "ACTIVE", "yesVotes": 35, "noVotes": 8, "completeness": "high", "aiLabel": "complete" }
+  ]
+}

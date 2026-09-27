@@ -1,0 +1,44 @@
+﻿{
+  "_metadata": {
+    "description": "SYNTHETIC DEMONSTRATION DATA — Not real student information",
+    "generated": "2026-09-27",
+    "purpose": "Academic prototype demonstration",
+    "project": "Blockchain Governance Platform — Amrita Vishwa Vidyapeetham CSE 2026"
+  },
+  "elections": [
+    {
+      "id": "demo-election-cr-2026",
+      "title": "CSE Class Representative Election 2026",
+      "type": "CR",
+      "eligibleVoters": 60,
+      "candidates": [
+        { "id": "A", "name": "Candidate A (Demo)", "votes": 28, "percentage": 46.7 },
+        { "id": "B", "name": "Candidate B (Demo)", "votes": 15, "percentage": 25.0 },
+        { "id": "C", "name": "Candidate C (Demo)", "votes": 5, "percentage": 8.3 }
+      ],
+      "votesCast": 48,
+      "turnout": 80.0,
+      "quorumRequired": 50,
+      "quorumMet": true,
+      "status": "FINALIZED",
+      "winner": "Candidate A (Demo)"
+    }
+  ],
+  "syntheticStudents": [
+    {"id":"S001","name":"Student_001","wallet":"0xf39f...","voted":true,"candidate":"A"},
+    {"id":"S002","name":"Student_002","wallet":"0x7099...","voted":true,"candidate":"A"},
+    {"id":"S003","name":"Student_003","wallet":"0x3c44...","voted":true,"candidate":"B"},
+    {"id":"S004","name":"Student_004","wallet":"0x90f7...","voted":false},
+    {"id":"S005","name":"Student_005","wallet":"0x15d3...","voted":true,"candidate":"C"},
+    {"id":"S006","name":"Student_006","wallet":"0x9965...","voted":true,"candidate":"A"},
+    {"id":"S007","name":"Student_007","wallet":"0x976e...","voted":true,"candidate":"B"},
+    {"id":"S008","name":"Student_008","wallet":"0x14dc...","voted":true,"candidate":"A"},
+    {"id":"S009","name":"Student_009","wallet":"0x2361...","voted":false},
+    {"id":"S010","name":"Student_010","wallet":"0xa0ee...","voted":true,"candidate":"B"}
+  ],
+  "testCases": {
+    "duplicateVote": { "description": "Student_001 attempting to vote again", "expectedResult": "REJECTED — hasVoted[electionId][member] returns true", "contractBehavior": "reverts with Already voted in this election" },
+    "unauthorizedVoter": { "description": "Non-member attempting to vote", "expectedResult": "REJECTED — eligibleVoters check fails", "contractBehavior": "reverts with Not an eligible voter" },
+    "votingAfterDeadline": { "description": "Valid member attempting to vote after endTime", "expectedResult": "REJECTED — block.timestamp check", "contractBehavior": "reverts with Election has ended" }
+  }
+}

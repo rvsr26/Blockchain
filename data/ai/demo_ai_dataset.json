@@ -1,0 +1,20 @@
+﻿{
+  "_metadata": {
+    "description": "AI training/demonstration dataset — SYNTHETIC LABELS",
+    "generated": "2026-09-27",
+    "purpose": "Academic prototype demonstration — not a real ML dataset"
+  },
+  "proposalLabels": [
+    { "id": 1, "title": "Complete hackathon proposal with budget breakdown", "label": "complete", "confidence": "high" },
+    { "id": 2, "title": "Proposal missing venue and timeline", "label": "incomplete", "confidence": "high" },
+    { "id": 3, "title": "Clear objectives with measurable outcomes", "label": "clear", "confidence": "high" },
+    { "id": 4, "title": "Vague description — no specific outcomes mentioned", "label": "unclear", "confidence": "medium" },
+    { "id": 5, "title": "Budget ₹500 for 200-person event", "label": "anomaly", "confidence": "high", "note": "Budget too low for scale" },
+    { "id": 6, "title": "Budget ₹20,000 for 50-person hackathon", "label": "normal_price", "confidence": "high" }
+  ],
+  "tenderLabels": [
+    { "id": 1, "vendor": "Vendor A", "label": "eligible", "docScore": 9, "priceLabel": "normal_price" },
+    { "id": 2, "vendor": "Vendor B", "label": "eligible", "docScore": 8, "priceLabel": "normal_price" },
+    { "id": 3, "vendor": "Vendor C", "label": "potentially_ineligible", "docScore": 4, "priceLabel": "potential_anomaly", "note": "Missing ISO cert, price suspiciously low" }
+  ]
+}

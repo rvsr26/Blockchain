@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 6%;
+    --foreground: 213 31% 91%;
+    --card: 222 47% 10%;
+    --card-foreground: 213 31% 91%;
+    --popover: 222 47% 8%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 226 70% 64%;
+    --primary-foreground: 222 47% 6%;
+    --secondary: 222 47% 14%;
+    --secondary-foreground: 213 31% 91%;
+    --muted: 222 47% 12%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 226 70% 64%;
+    --accent-foreground: 222 47% 6%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 222 47% 18%;
+    --input: 222 47% 14%;
+    --ring: 226 70% 64%;
+    --radius: 0.75rem;
+    --success: 142 71% 45%;
+    --warning: 43 96% 56%;
+  }
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-[#0b0f1a] text-[#e2e8f0] font-sans antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(79, 110, 247, 0.08), transparent),
+      radial-gradient(ellipse 40% 60% at 80% 50%, rgba(107, 140, 255, 0.04), transparent);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, h4, h5, h6 { @apply font-semibold tracking-tight; }
+}
+
+@layer components {
+  .glass-card {
+    @apply rounded-xl border border-[#252a3d] bg-[#171b2d]/80 backdrop-blur-sm;
+    box-shadow: 0 1px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .gradient-text {
+    @apply bg-gradient-to-r from-[#6b8cff] via-[#9b7dff] to-[#6b8cff] bg-clip-text text-transparent;
+    background-size: 200%;
+    animation: gradient-shift 4s ease infinite;
+  }
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-[#4f6ef7] to-[#6b4fff]
+      text-white font-medium text-sm shadow-lg shadow-[#4f6ef7]/20 hover:shadow-[#4f6ef7]/30
+      hover:from-[#3d5af1] hover:to-[#5a3dff] transition-all duration-200 active:scale-[0.98]
+      disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#252a3d]
+      bg-[#171b2d] text-[#94a3b8] font-medium text-sm hover:border-[#4f6ef7]/40 hover:text-white
+      transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .input-field {
+    @apply w-full px-3 py-2 rounded-lg border border-[#252a3d] bg-[#0f1117] text-[#e2e8f0]
+      text-sm placeholder:text-[#475569] focus:outline-none focus:ring-2 focus:ring-[#4f6ef7]/50
+      focus:border-[#4f6ef7]/50 transition-all duration-200;
+  }
+  .table-row {
+    @apply border-b border-[#252a3d]/50 hover:bg-[#1e2438]/50 transition-colors;
+  }
+  .nav-link {
+    @apply flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-[#94a3b8] hover:text-white
+      hover:bg-[#1e2438] transition-all duration-200 cursor-pointer;
+  }
+  .nav-link.active {
+    @apply text-white bg-[#1e2438] border border-[#252a3d];
+  }
+  .metric-card {
+    @apply glass-card p-5 flex flex-col gap-2;
+  }
+  .blockchain-badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-mono
+      bg-[#4f6ef7]/10 text-[#6b8cff] border border-[#4f6ef7]/20;
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0b0f1a; }
+::-webkit-scrollbar-thumb { background: #252a3d; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #4f6ef7; }
+
+/* Loading animations */
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-spinner {
+  @apply inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full;
+  animation: spin 0.6s linear infinite;
+}
