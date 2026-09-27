@@ -1,10 +1,12 @@
-﻿import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { useWallet } from "../../hooks/useWallet";
+import { useRealTimeSync } from "../../hooks/useRealTimeSync";
 
 export default function Layout() {
   const { wallet } = useWallet();
+  useRealTimeSync();
   return (
     <div className="flex h-screen overflow-hidden bg-[#0b0f1a]">
       <Sidebar />

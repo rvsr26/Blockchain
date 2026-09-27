@@ -1,4 +1,4 @@
-﻿import { Router, Request, Response, NextFunction } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { prisma } from "../utils/db";
 import multer from "multer";
 import path from "path";
@@ -30,6 +30,11 @@ router.post("/", upload.single("file"), async (req: Request, res: Response, next
         refType,
       },
     });
+    
+    // Import and emit
+    const { io } = require("../index");
+    io.emit("document.uploaded", { docId: doc.id, fileName: doc.fileName });
+    
     res.status(201).json(doc);
   } catch (err) { next(err); }
 });

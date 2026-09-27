@@ -1,6 +1,7 @@
-﻿import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { connectMetaMask, connectDemoMode, WalletState } from "../services/wallet";
 import { api } from "../services/api";
+import { ethers } from "ethers";
 
 const INITIAL_STATE: WalletState = {
   address: null, balance: null, chainId: null,
@@ -31,11 +32,20 @@ export function useWallet() {
     setWallet((w) => ({ ...w, connecting: true }));
     try {
       const state = await connectMetaMask();
+      
+      // Get nonce
+      const { nonce } = await api.getNonce({ walletAddress: state.address! });
+      
+      // Sign message
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const signature = await signer.signMessage(nonce);
+      
+      // Login
+      const token = await api.login({ walletAddress: state.address!, signature }) as any;
+      
       setWallet(state);
       localStorage.setItem("wallet_state", JSON.stringify(state));
-      // Login to backend
-      await api.login({ walletAddress: state.address! });
-      const token = (await api.login({ walletAddress: state.address! })) as any;
       if (token.token) localStorage.setItem("auth_token", token.token);
     } catch (err: any) {
       setWallet(INITIAL_STATE);
@@ -46,10 +56,19 @@ export function useWallet() {
   const connectDemo = useCallback(async () => {
     setWallet((w) => ({ ...w, connecting: true }));
     const state = connectDemoMode();
-    setWallet(state);
-    localStorage.setItem("wallet_state", JSON.stringify(state));
+    
     try {
-      const result = await api.login({ walletAddress: state.address!, displayName: "Demo User" }) as any;
+      // Get nonce
+      const { nonce } = await api.getNonce({ walletAddress: state.address! });
+      
+      // Use fake signature for demo
+      const signature = "0x" + "0".repeat(130); // 65-byte dummy signature
+      
+      // Login
+      const result = await api.login({ walletAddress: state.address!, signature, displayName: "Demo User" }) as any;
+      
+      setWallet(state);
+      localStorage.setItem("wallet_state", JSON.stringify(state));
       if (result.token) localStorage.setItem("auth_token", result.token);
     } catch {}
   }, []);
@@ -60,5 +79,19 @@ export function useWallet() {
     localStorage.removeItem("auth_token");
   }, []);
 
-  return { wallet, connect, connectDemo, disconnect };
+  const switchNetwork = useCallback(async () => {
+    if (typeof window.ethereum === "undefined") return;
+    const targetChainId = import.meta.env.VITE_CHAIN_ID || "31337";
+    const hexChainId = `0x${Number(targetChainId).toString(16)}`;
+    try {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: hexChainId }],
+      });
+    } catch (switchError: any) {
+      console.error(switchError);
+    }
+  }, []);
+
+  return { wallet, connect, connectDemo, disconnect, switchNetwork };
 }

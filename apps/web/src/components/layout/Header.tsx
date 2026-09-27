@@ -1,4 +1,4 @@
-﻿import { Wallet, LogOut, Bell, ChevronDown, Wifi, WifiOff } from "lucide-react";
+import { Wallet, LogOut, Bell, ChevronDown, Wifi, WifiOff } from "lucide-react";
 import { useState } from "react";
 import { shortenAddress } from "../../services/wallet";
 import { WalletState } from "../../services/wallet";
@@ -7,7 +7,7 @@ import { useWallet } from "../../hooks/useWallet";
 interface Props { wallet: WalletState; }
 
 export default function Header({ wallet }: Props) {
-  const { connect, connectDemo, disconnect } = useWallet();
+  const { connect, connectDemo, disconnect, switchNetwork } = useWallet();
   const [open, setOpen] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState("");
@@ -21,17 +21,30 @@ export default function Header({ wallet }: Props) {
     try { await connectDemo(); } finally { setConnecting(false); }
   };
 
+  const targetChainId = Number(import.meta.env.VITE_CHAIN_ID || "31337");
+  const isWrongNetwork = wallet.connected && !wallet.isDemoMode && wallet.chainId !== targetChainId;
+
   return (
     <header className="flex items-center justify-between px-6 py-3 border-b border-[#252a3d] bg-[#0d1121]/50 backdrop-blur-sm sticky top-0 z-10">
       <div className="flex items-center gap-3">
         {wallet.connected ? (
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse-slow" />
-            <span className="text-xs text-[#94a3b8]">{wallet.network}</span>
+            <div className={`w-2 h-2 rounded-full ${isWrongNetwork ? 'bg-red-500' : 'bg-green-400'} animate-pulse-slow`} />
+            <span className="text-xs text-[#94a3b8]">
+              {isWrongNetwork ? "Wrong Network" : wallet.network || "ChainGov Testnet"}
+            </span>
             {wallet.isDemoMode && (
               <span className="px-2 py-0.5 rounded text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
                 DEMO MODE
               </span>
+            )}
+            {isWrongNetwork && (
+              <button 
+                onClick={switchNetwork}
+                className="ml-2 px-2 py-0.5 rounded text-xs bg-red-500/10 text-red-400 border border-red-500/20 font-medium hover:bg-red-500/20"
+              >
+                Switch to Testnet
+              </button>
             )}
           </div>
         ) : (

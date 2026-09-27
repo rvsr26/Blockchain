@@ -1,8 +1,10 @@
-﻿import express from "express";
+import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
+import { createServer } from "http";
+import { Server } from "socket.io";
 import { logger } from "./utils/logger";
 import { errorHandler } from "./middleware/errorHandler";
 import organizationRoutes from "./routes/organizations";
@@ -20,7 +22,23 @@ import reputationRoutes from "./routes/reputation";
 dotenv.config({ path: "../../.env" });
 
 const app = express();
+const httpServer = createServer(app);
 const PORT = process.env.PORT || 3001;
+
+// Socket.IO
+export const io = new Server(httpServer, {
+  cors: {
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    credentials: true,
+  }
+});
+
+io.on("connection", (socket) => {
+  logger.info(`Client connected via websocket: ${socket.id}`);
+  socket.on("disconnect", () => {
+    logger.info(`Client disconnected: ${socket.id}`);
+  });
+});
 
 // Security middleware
 app.use(helmet({ contentSecurityPolicy: false }));
@@ -50,6 +68,8 @@ app.use("/api/audit", auditRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/reputation", reputationRoutes);
 
+import { BlockchainIndexer } from "./services/indexer";
+
 // Health check
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString(), mode: process.env.DEMO_MODE === "true" ? "demo" : "production" });
@@ -57,9 +77,12 @@ app.get("/health", (req, res) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   logger.info(`Governance Platform API running on port ${PORT}`);
   logger.info(`Demo mode: ${process.env.DEMO_MODE === "true"}`);
+  
+  const indexer = new BlockchainIndexer();
+  indexer.start().catch(e => logger.error(`Indexer failed: ${e.message}`));
 });
 
 export default app;

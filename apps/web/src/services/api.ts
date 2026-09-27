@@ -1,4 +1,4 @@
-﻿const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 function getHeaders() {
   const token = localStorage.getItem("auth_token");
@@ -22,6 +22,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 export const api = {
   // Auth
+  getNonce: (data: { walletAddress: string }) => request<any>("/api/auth/nonce", { method: "POST", body: JSON.stringify(data) }),
   login: (data: any) => request("/api/auth/login", { method: "POST", body: JSON.stringify(data) }),
   me: () => request("/api/auth/me"),
 

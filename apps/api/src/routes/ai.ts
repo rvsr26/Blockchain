@@ -1,4 +1,4 @@
-﻿import { Router, Request, Response, NextFunction } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { analyzeProposal, analyzeTender, chatWithAI } from "../services/aiService";
 import { prisma } from "../utils/db";
 import { z } from "zod";
@@ -21,6 +21,9 @@ router.post("/analyze-proposal", async (req: Request, res: Response, next: NextF
           provider: process.env.OPENAI_API_KEY ? "openai" : "demo",
         },
       });
+      // Emit
+      const { io } = require("../index");
+      io.emit("ai.analysis.completed", { refId: proposalId, refType: "proposal" });
     }
     
     res.json(analysis);
@@ -43,6 +46,9 @@ router.post("/analyze-tender", async (req: Request, res: Response, next: NextFun
           provider: process.env.OPENAI_API_KEY ? "openai" : "demo",
         },
       });
+      // Emit
+      const { io } = require("../index");
+      io.emit("ai.analysis.completed", { refId: tenderId, refType: "tender" });
     }
     
     res.json(analysis);
